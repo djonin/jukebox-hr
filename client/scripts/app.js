@@ -69,7 +69,7 @@ var PlaylistEntry = React.createClass({
 
 	onClickEvent: function(evt) {
 		console.log(this.props.track);
-		JukeboxActions.startPlayback(this.props.track);
+		JukeboxActions.removeFromPlaylist(this.props.track);
 	},
 
 	render: function() {
@@ -91,9 +91,20 @@ var Playlist = React.createClass({
 
 var PlaybackControl = React.createClass({
 
+	componentDidMount: function() {
+		console.log('asdasd');
+		document.getElementById('aud').addEventListener('ended', JukeboxActions.endCurrentTrack);
+	},
+
 	render : function() {
-		var audioSource = JukeboxStore.getCurrentTrack().stream_url+'?client_id='+SOUND_CLOUD_KEY;
-		return (<div data-spy='affix' id='player'>{JukeboxStore.getCurrentTrack().title} <br/><audio src={audioSource} controls></audio></div>);
+		var curTrack = JukeboxStore.getCurrentTrack();
+		var audioSource = ''
+		var title = ''
+		if(curTrack.stream_url) {
+			audioSource = JukeboxStore.getCurrentTrack().stream_url+'?client_id='+SOUND_CLOUD_KEY;
+			title = curTrack.title;
+		}
+		return (<div data-spy='affix' id='player'>{title} <br/><audio id='aud' src={audioSource} controls autoPlay></audio></div>);
 	}
 });
 

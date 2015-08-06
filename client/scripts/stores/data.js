@@ -7,8 +7,10 @@ var playlist = [];
 var currentTrack = {};
 
 var endCurrentTrack = function() {
+	console.log(currentTrack);
 	removeFromPlaylist(currentTrack);
 	currentTrack = playlist[0] || {};
+	console.log(currentTrack);
 }
 
 var setCurrentTrack = function(track) {
@@ -21,12 +23,18 @@ var updateSearchResults = function(results) {
 
 var addToPlaylist = function(track) {
 	playlist.push(track);
+	if(playlist.length === 1) {
+		setCurrentTrack(track);
+	}
 }
 
 var removeFromPlaylist = function(track) {
 	var index = playlist.indexOf(track);
 	if(index > -1) {
 		playlist.splice(index, 1);
+	}
+	if(index === 0) {
+		setCurrentTrack(playlist[0] || {});
 	}
 }
 
@@ -60,6 +68,10 @@ var JukeboxStore = assign({}, EventEmitter.prototype, {
 AppDispatcher.register(function(action) {
 
 	switch(action.actionType) {
+		case 'removeFromPlaylist' :
+			removeFromPlaylist(action.track);
+			JukeboxStore.emitChange();
+			break;
 		case 'endCurrentTrack' :
 			endCurrentTrack();
 			JukeboxStore.emitChange();

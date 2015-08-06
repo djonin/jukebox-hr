@@ -6,14 +6,25 @@ SC.initialize({
 
 module.exports = {
 
+	endCurrentTrack: function() {
+		console.log('asdasd');
+		AppDispatcher.dispatch({
+			actionType: 'endCurrentTrack'
+		});
+	},
+
+	removeFromPlaylist: function(track) {
+		AppDispatcher.dispatch({
+			actionType: 'removeFromPlaylist',
+			track: track
+		});
+	},
+
 	startPlayback: function(track) {
 		AppDispatcher.dispatch({
 			actionType: 'setCurrentTrack',
 			track: track
 		});
-	    SC.stream(track.uri, function(sound){
-	      sound.play();
-	    });
 	},
 
 	updateSearchResults: function(evt) {
