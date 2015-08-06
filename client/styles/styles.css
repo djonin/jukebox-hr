@@ -5,15 +5,40 @@
 	margin-top:1%;
 }
 
+.tracks {
+  padding: 2% 0 0 5%;
+}
+
 #playlist {
 	position: fixed;
-	top:1%;
-	right:5%;
+	top:20%;
+  right: 5%;
 }
 
 #player {
-	position:fixed;
-	left:50%;
-	bottom:1%;
-
+  position: fixed;
+  left: 1%;
+  bottom: 1%;
+  width: 99%;
+  text-align: center;
 }
+
+#player_title {
+  color: white;
+  position: relative;
+  bottom: -48px;
+  width: inherit;
+  z-index: 5;
+}
+
+audio {
+  display: inline-block;
+  vertical-align: baseline;
+  width: inherit;
+  opacity: .5;
+  background-color: rgb(24, 25, 25);
+  height: 70px;
+  padding: 0 0 12px 0;
+}
+
+
