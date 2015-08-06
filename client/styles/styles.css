@@ -1,6 +1,50 @@
 .search {
 	display:block;
-    margin: auto;
+  margin: auto;
 	width: 80%;
 	margin-top:1%;
 }
+
+img {
+  margin: 0 auto;
+}
+
+.entry {
+  display: inline-block;
+  width: 200px;
+  padding-top: 30px;
+  padding-left: 30px;
+}
+
+.track {
+  top: 20%;
+  left: 10%;
+}
+
+.title {
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+  font-family: 'Lobster', cursive;
+  font-size: 70px;
+}
+
+.song-title {
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+  font-size: 15px;
+}
+
+.list {
+  position: absolute;
+  margin-right: 1%;
+  width: 15%;
+  top: 20%;
+  left: 70%;
+}
+
+.listEntry {
+  /*height: 5px;*/
+}
+
