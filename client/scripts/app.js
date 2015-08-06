@@ -1,6 +1,6 @@
-//var ui = require('material_bundle');
-
-
+var JukeboxActions = require('./actions/JukeboxActions.js');
+var JukeboxStore = require('./stores/data.js');
+var React = require('react');
 var App = React.createClass({
 
 	getInitialState: function() {
@@ -20,10 +20,13 @@ var App = React.createClass({
 	},
 
 	render: function() {
-		return (<div><h1 className='title'>Play Music</h1><SearchBox />
-					    <SearchResults />
-              <Playlist />
-				  </div>);
+		return (<div>
+					<h1 className='title'>Play Music</h1>
+					<SearchBox />
+					<SearchResults />
+              		<Playlist />
+              		<PlaybackControl />
+				</div>);
 	}
 });
 
@@ -44,7 +47,7 @@ var ResultEntry = React.createClass({
 var SearchResults = React.createClass({
 	render: function() {
 		var elems = [];
-		var tracks = JukeboxStore.getSearchResults;
+		var tracks = JukeboxStore.getResults();
 		for (var i = 0; i < tracks.length; i++) {
 			elems.push(<ResultEntry track={tracks[i]} />);
 		}
@@ -63,9 +66,15 @@ var SearchBox = React.createClass({
 });
 
 var PlaylistEntry = React.createClass({
-  render: function() {
-    return (<li onClick={JukeboxActions.startPlayback} className='listEntry list-group-item'><h4>{this.props.track.title}</h4><span>{this.props.track.duration}</span></li>);
-  }
+
+	onClickEvent: function(evt) {
+		console.log(this.props.track);
+		JukeboxActions.startPlayback(this.props.track);
+	},
+
+	render: function() {
+		return (<li onClick={this.onClickEvent} className='listEntry list-group-item'><h4>{this.props.track.title}</h4><span>{this.props.track.duration}</span></li>);
+	}
 });
 
 var Playlist = React.createClass({
@@ -76,8 +85,16 @@ var Playlist = React.createClass({
       elems.push(<PlaylistEntry track={tracks[i]} />);
     }
 
-    return (<ul className='list list-group'>{elems}</ul>);
+    return (<ul data-spy='affix' id='playlist' className='list-group'>{elems}</ul>);
   }
+});
+
+var PlaybackControl = React.createClass({
+
+	render : function() {
+		var audioSource = JukeboxStore.getCurrentTrack().stream_url+'?client_id='+SOUND_CLOUD_KEY;
+		return (<div data-spy='affix' id='player'>{JukeboxStore.getCurrentTrack().title} <br/><audio src={audioSource} controls></audio></div>);
+	}
 });
 
 
