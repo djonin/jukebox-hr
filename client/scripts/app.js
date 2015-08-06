@@ -1,46 +1,36 @@
 //var ui = require('material_bundle');
 
-SC.initialize({
-	client_id: SOUND_CLOUD_KEY
-});
 
 var App = React.createClass({
 
 	getInitialState: function() {
-		return { tracks : [], playlist: [] };
+		return { tracks : JukeboxStore.getResults(), playlist: JukeboxStore.getPlaylist() };
 	},
 
-	updateSearchResults: function(evt) {
-		var input = evt.target.value;
-		var that = this;
-		// find all sounds of buskers licensed under 'creative commons share alike'
-		SC.get('/tracks', { q: input}, function(tracks) {
-			that.setState({tracks:tracks, playlist: that.state.playlist});
-			that.render();
-		});
+	componentDidMount: function() {
+		JukeboxStore.addChangeListener(this._onChange);
 	},
 
-  onSearchResultClick: function(evt, track) {
-    console.log('click evt:', evt.target);
-    console.log('track:', track);
-    var list = this.state.playlist;
-    list.push(track);
-    this.setState({tracks: this.state.tracks, playlist: list});
-    this.render();
-  },
+	componentWillUnmount: function() {
+		JukeboxStore.removeChangeListener(this._onChange);
+	},
+
+	_onChange: function() {
+		this.setState({ tracks : JukeboxStore.getResults(), playlist: JukeboxStore.getPlaylist() });
+	},
 
 	render: function() {
-		return (<div><h1 className='title'>Play Music</h1><SearchBox onChange={this.updateSearchResults}/>
-					    <SearchResults onClick={this.onSearchResultClick} tracks={this.state.tracks}/>
-              <Playlist list={this.state.playlist}/>
+		return (<div><h1 className='title'>Play Music</h1><SearchBox />
+					    <SearchResults />
+              <Playlist />
 				  </div>);
 	}
 });
 
 var ResultEntry = React.createClass({
-  clickEvent: function(evt) {
-    this.props.onClick(evt, this.props.track);
-  },
+	clickEvent: function() {
+		JukeboxActions.addToPlaylist(this.props.track);
+	},
 
 	render: function() {
 		if(!this.props.track.artwork_url) {
@@ -54,9 +44,9 @@ var ResultEntry = React.createClass({
 var SearchResults = React.createClass({
 	render: function() {
 		var elems = [];
-		var tracks = this.props.tracks;
+		var tracks = JukeboxStore.getSearchResults;
 		for (var i = 0; i < tracks.length; i++) {
-			elems.push(<ResultEntry onClick={this.props.onClick} track={tracks[i]} />);
+			elems.push(<ResultEntry track={tracks[i]} />);
 		}
 		return  (<div className='tracks'>
 					{elems}
@@ -67,37 +57,23 @@ var SearchResults = React.createClass({
 
 var SearchBox = React.createClass({
 
-	updateResults: function(evt) {
-		this.props.onChange(evt);
-	},
-
 	render: function() {
-		return (<input className='search input-lg' placeholder='Search' onChange={this.updateResults}></input>);
+		return (<input className='search input-lg' placeholder='Search' onChange={JukeboxActions.updateSearchResults}></input>);
 	}
 });
 
 var PlaylistEntry = React.createClass({
-  clickEvent: function(evt) {
-    this.props.onClick(evt, this.props.track);
-  },
-
   render: function() {
-    return (<li onClick={this.clickEvent} className='listEntry list-group-item'><h4>{this.props.track.title}</h4><span>{this.props.track.duration}</span></li>);
+    return (<li onClick={JukeboxActions.startPlayback} className='listEntry list-group-item'><h4>{this.props.track.title}</h4><span>{this.props.track.duration}</span></li>);
   }
 });
 
 var Playlist = React.createClass({
-  onClick: function(evt, track) {
-    SC.stream(track.uri, function(sound){
-      sound.play();
-    });
-  },
-
   render: function() {
     var elems = [];
-    var tracks = this.props.list;
+    var tracks = JukeboxStore.getPlaylist();
     for (var i = 0; i < tracks.length; i++) {
-      elems.push(<PlaylistEntry onClick={this.onClick} track={tracks[i]} />);
+      elems.push(<PlaylistEntry track={tracks[i]} />);
     }
 
     return (<ul className='list list-group'>{elems}</ul>);
