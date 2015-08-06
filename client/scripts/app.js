@@ -98,13 +98,13 @@ var PlaybackControl = React.createClass({
 
 	render : function() {
 		var curTrack = JukeboxStore.getCurrentTrack();
-		var audioSource = ''
-		var title = ''
+		var audioSource = '';
+		var title = '';
 		if(curTrack.stream_url) {
 			audioSource = JukeboxStore.getCurrentTrack().stream_url+'?client_id='+SOUND_CLOUD_KEY;
 			title = curTrack.title;
 		}
-		return (<div data-spy='affix' id='player'>{title} <br/><audio id='aud' src={audioSource} controls autoPlay></audio></div>);
+		return (<div data-spy='affix' id='player'><div id='player_title'>{title}</div><br/><audio id='aud' src={audioSource} controls autoPlay></audio></div>);
 	}
 });
 
